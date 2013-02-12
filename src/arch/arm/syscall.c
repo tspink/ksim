@@ -11,7 +11,7 @@
 typedef int (*syscall_fn)(void);
 
 static syscall_fn syscall_table[] = {
-    (syscall_fn)syscall_not_impl
+	(syscall_fn)syscall_not_impl
 };
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_table[0]))

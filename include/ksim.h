@@ -24,7 +24,18 @@ struct arcsim_kernel {
 	void (*exit)(void *);
 };
 
-extern int arm_perform_syscall(struct arcsim_syscall_ctx *ctx, int syscall, int arg0, int arg1, int arg2, int arg3);
+struct ksim_arch {
+    int (*init)();
+    void (*exit)();
+    syscall_cb syscall;
+};
+
+struct ksim_context {
+    const struct ksim_arch *arch;
+};
+
+extern const struct ksim_arch arm_arch;
+
 extern int syscall_not_impl(struct arcsim_syscall_ctx *ctx);
 
 #endif
