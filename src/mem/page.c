@@ -8,9 +8,8 @@
  */
 #include <ksim.h>
 #include <ksim-mem.h>
+#include <ksim-thread.h>
 #include <malloc.h>
-
-static struct ksim_page *mapped_pages;
 
 static inline int inc_ref(struct ksim_page *page)
 {
@@ -22,9 +21,9 @@ static inline int dec_ref(struct ksim_page *page)
 	return --page->ref;
 }
 
-static void add_page(struct ksim_page *page)
+static void add_page(struct ksim_page **mapping, struct ksim_page *page)
 {
-	struct ksim_page **next = &mapped_pages;
+	struct ksim_page **next = mapping;
 	
 	while (*next) {
 		next = &(*next)->next;
@@ -33,9 +32,9 @@ static void add_page(struct ksim_page *page)
 	(*next) = page;
 }
 
-static struct ksim_page *lookup_page(unsigned long page_index)
+static struct ksim_page *lookup_page(struct ksim_page **mapping, unsigned long page_index)
 {
-	struct ksim_page *page = mapped_pages;
+	struct ksim_page *page = *mapping;
 	
 	while (page) {
 		if (page->page_index == page_index)
@@ -48,9 +47,10 @@ static struct ksim_page *lookup_page(unsigned long page_index)
 
 struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long page_index)
 {
+	struct ksim_page **mapping = &thread_current(ctx)->page_mapping;
 	struct ksim_page *page;
 	
-	page = lookup_page(page_index);
+	page = lookup_page(mapping, page_index);
 	if (page) {
 		inc_ref(page);
 		return page;
@@ -59,7 +59,8 @@ struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long pag
 	page = malloc(sizeof(*page));
 	if (!page)
 		return NULL;
-		
+	
+	page->ctx = ctx;
 	page->page_index = page_index;
 	page->guest_base = page_index * GUEST_PAGE_SIZE;
 	page->host_base = 0;
@@ -71,7 +72,7 @@ struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long pag
 		return NULL;
 	}
 	
-	add_page(page);
+	add_page(mapping, page);
 	return page;
 }
 
@@ -83,9 +84,10 @@ void mem_unmap_guest_page(struct ksim_page *page)
 	free(page);
 }
 
-void mem_unmap_guest_page_nr(unsigned long page_index)
+void mem_unmap_guest_page_nr(struct ksim_context *ctx, unsigned long page_index)
 {
-	struct ksim_page *page = lookup_page(page_index);
+	struct ksim_page **mapping = &thread_current(ctx)->page_mapping;
+	struct ksim_page *page = lookup_page(mapping, page_index);
 	if (page)
 		mem_unmap_guest_page(page);
 }

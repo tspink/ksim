@@ -29,6 +29,9 @@ static struct ksim_thread *create_thread_descriptor(int pid)
     
 	/* Store the PID for the thread. */
 	thread->pid = pid;
+	
+	/* Initialise page mapping information. */
+	thread->page_mapping = NULL;
     
 	/* Initialise the file-descriptor table. */
 	memset(thread->fd_table, 0, sizeof(thread->fd_table));

@@ -5,14 +5,20 @@
 
 #include <ksim-vfs.h>
 
+struct ksim_page;
+struct ksim_context;
+
 struct ksim_thread {
     unsigned int pid;
     
     struct vfs_fildes fd_table[MAX_FILDES];
+    struct ksim_page *page_mapping;
 };
 
 struct ksim_thread_context {
     struct ksim_thread *main_thread;
 };
+
+extern struct ksim_thread *thread_current(struct ksim_context *ctx);
 
 #endif

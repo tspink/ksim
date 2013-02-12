@@ -21,7 +21,7 @@ int syscall_open(struct ksim_context *ctx, __guest const char *gpath, int mode)
 	translated_path = vfs_translate_path(ctx, path);
 	printf("SYSCALL: OPEN: %s, REAL: %s\n", path, translated_path);
 	
-	free_guest_string(path);
+	free_guest_string(ctx, path);
 	return -1;
 }
 

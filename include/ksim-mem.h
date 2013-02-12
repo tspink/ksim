@@ -11,6 +11,7 @@ struct ksim_page {
 	unsigned long guest_base;
 	unsigned long host_base;
 	
+	struct ksim_context *ctx;
 	struct ksim_page *next;
 };
 
@@ -18,6 +19,6 @@ struct ksim_context;
 
 extern struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long page_index);
 extern void mem_unmap_guest_page(struct ksim_page *page);
-extern void mem_unmap_guest_page_nr(unsigned long page_index);
+extern void mem_unmap_guest_page_nr(struct ksim_context *ctx, unsigned long page_index);
 
 #endif

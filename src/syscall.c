@@ -27,7 +27,7 @@ char *read_guest_string(struct ksim_context *ctx, __guest const char *addr)
 	return (char *)(page->host_base + GUEST_ADDR_TO_PAGE_OFFSET(addr));
 }
 
-void free_guest_string(__guest const char *addr)
+void free_guest_string(struct ksim_context *ctx, __guest const char *addr)
 {
-	mem_unmap_guest_page_nr(GUEST_ADDR_TO_PAGE(addr));
+	mem_unmap_guest_page_nr(ctx, GUEST_ADDR_TO_PAGE(addr));
 }
