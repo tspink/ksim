@@ -3,9 +3,13 @@
 
 struct arcsim_syscall_ctx {
 	void *priv;
+	unsigned int syscall_nr;
 };
 
-typedef int (*syscall_cb)(struct arcsim_syscall_ctx *, int, int, int, int, int);
+struct ksim_context;
+
+typedef int (*arcsim_syscall_cb)(struct arcsim_syscall_ctx *);
+typedef int (*ksim_syscall_cb)(struct ksim_context *, unsigned int, int, int, int, int);
 
 enum arcsim_arch_type {
 	ARCH_UNKNOWN	= 0,
@@ -15,7 +19,7 @@ enum arcsim_arch_type {
 
 struct arcsim_kernel_options {
 	void *priv;
-	syscall_cb syscall;
+	arcsim_syscall_cb syscall;
 	enum arcsim_arch_type arch_type;
 };
 
@@ -27,7 +31,7 @@ struct arcsim_kernel {
 struct ksim_arch {
 	int (*init)();
 	void (*exit)();
-	syscall_cb syscall;
+	ksim_syscall_cb syscall;
 };
 
 struct ksim_vfs_context;

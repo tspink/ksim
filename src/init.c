@@ -9,6 +9,12 @@
 #include <ksim.h>
 #include <malloc.h>
 
+static int syscall(struct arcsim_syscall_ctx *syscall_ctx)
+{
+    struct ksim_context *ctx = syscall_ctx->priv;
+    return ctx->arch->syscall(ctx, syscall_ctx->syscall_nr, 0, 0, 0, 0);
+}
+
 static int kernel_init(struct arcsim_kernel_options *opt)
 {
 	struct ksim_context *ctx;
@@ -58,7 +64,7 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 	
 	/* Populate the arcsim options structure. */
 	opt->priv = ctx;
-	opt->syscall = arch->syscall;
+	opt->syscall = syscall;
 
 	return 0;
 }

@@ -16,7 +16,7 @@ static syscall_fn syscall_table[] = {
 
 #define SYSCALL_TABLE_SIZE (sizeof(syscall_table) / sizeof(syscall_table[0]))
 
-int arm_perform_syscall(struct arcsim_syscall_ctx *ctx, int syscall, int arg0, int arg1, int arg2, int arg3)
+int arm_perform_syscall(struct ksim_context *ctx, int syscall, int arg0, int arg1, int arg2, int arg3)
 {
 	if (syscall >= SYSCALL_TABLE_SIZE)
 		return -1;

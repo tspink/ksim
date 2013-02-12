@@ -8,7 +8,7 @@
  */
 #include <ksim.h>
 
-extern int arm_perform_syscall(struct arcsim_syscall_ctx *ctx, int syscall, int arg0, int arg1, int arg2, int arg3);
+extern int arm_perform_syscall(struct ksim_context *ctx, unsigned int syscall, int arg0, int arg1, int arg2, int arg3);
 
 static int arm_init()
 {

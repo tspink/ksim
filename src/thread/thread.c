@@ -75,3 +75,8 @@ struct ksim_thread *thread_current(struct ksim_context *ctx)
 {
 	return ctx->thread->main_thread;
 }
+
+int syscall_exit(struct ksim_context *ctx)
+{
+    return 0;
+}
