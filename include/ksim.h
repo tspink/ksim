@@ -60,6 +60,6 @@ extern int thread_init(struct ksim_context *context);
 extern void thread_exit(struct ksim_context *context);
 
 extern char *read_guest_string(struct ksim_context *context, __guest const char *str);
-extern void free_guest_string(char *str);
+extern void free_guest_string(__guest const char *str);
 
 #endif

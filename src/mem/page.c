@@ -33,7 +33,7 @@ static void add_page(struct ksim_page *page)
 	(*next) = page;
 }
 
-static struct ksim_page *lookup_page(int page_index)
+static struct ksim_page *lookup_page(unsigned long page_index)
 {
 	struct ksim_page *page = mapped_pages;
 	
@@ -46,7 +46,7 @@ static struct ksim_page *lookup_page(int page_index)
 	return NULL;
 }
 
-struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, int page_index)
+struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long page_index)
 {
 	struct ksim_page *page;
 	
@@ -81,4 +81,11 @@ void mem_unmap_guest_page(struct ksim_page *page)
 		return;
 	
 	free(page);
+}
+
+void mem_unmap_guest_page_nr(unsigned long page_index)
+{
+	struct ksim_page *page = lookup_page(page_index);
+	if (page)
+		mem_unmap_guest_page(page);
 }
