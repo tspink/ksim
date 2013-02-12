@@ -32,6 +32,20 @@ static void add_page(struct ksim_page **mapping, struct ksim_page *page)
 	(*next) = page;
 }
 
+static void remove_page(struct ksim_page *page)
+{
+	struct ksim_page *curr = thread_current(page->ctx)->page_mapping;
+	
+	while (curr) {
+		if (curr->next == page) {
+			curr->next = page->next;
+			break;
+		}
+		
+		curr = curr->next;
+	}
+}
+
 static struct ksim_page *lookup_page(struct ksim_page **mapping, unsigned long page_index)
 {
 	struct ksim_page *page = *mapping;
@@ -81,6 +95,7 @@ void mem_unmap_guest_page(struct ksim_page *page)
 	if (dec_ref(page) > 0)
 		return;
 	
+	remove_page(page);
 	free(page);
 }
 
