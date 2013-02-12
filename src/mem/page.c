@@ -46,7 +46,7 @@ static struct ksim_page *lookup_page(int page_index)
 	return NULL;
 }
 
-struct ksim_page *mem_map_guest_page(int page_index)
+struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, int page_index)
 {
 	struct ksim_page *page;
 	
