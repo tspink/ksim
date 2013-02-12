@@ -22,3 +22,19 @@ void vfs_exit(struct ksim_context *context)
 {
 	free(context->vfs);
 }
+
+int vfs_init_fd_table(struct vfs_fildes *table, int size)
+{
+	if (size < 3)
+		return -1;
+	
+	/* Initialise stdin, stdout & stderr */
+	table[0].state = OPEN;
+	table[0].real_fd = 0;
+	table[1].state = OPEN;
+	table[1].real_fd = 1;
+	table[2].state = OPEN;
+	table[2].real_fd = 2;
+	
+	return 0; 
+}
