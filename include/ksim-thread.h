@@ -2,7 +2,7 @@
 #define __KSIM_THREAD_H__
 
 struct ksim_thread {
-    int pid;
+    unsigned int pid;
 };
 
 struct ksim_thread_context {
