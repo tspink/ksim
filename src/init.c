@@ -42,8 +42,15 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 	ctx->opt = opt;
 	
 	/* Start the various subsystems. */
+	rc = thread_init(ctx);
+	if (rc) {
+	    free(ctx);
+	    arch->exit();
+	}
+	
 	rc = vfs_init(ctx);
 	if (rc) {
+	    thread_exit(ctx);
 	    free(ctx);
 	    arch->exit();
 	    return rc;
