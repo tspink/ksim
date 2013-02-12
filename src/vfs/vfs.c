@@ -38,3 +38,8 @@ int vfs_init_fd_table(struct vfs_fildes *table, int size)
 	
 	return 0; 
 }
+
+char *vfs_translate_path(struct ksim_context *context, const char *path)
+{
+    return (char *)path;
+}

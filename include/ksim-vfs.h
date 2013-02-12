@@ -15,6 +15,9 @@ struct vfs_fildes {
     int real_fd;
 };
 
+struct ksim_context;
+
 extern int vfs_init_fd_table(struct vfs_fildes *fd_table, int size);
+extern char *vfs_translate_path(struct ksim_context *ctx, const char *path);
 
 #endif

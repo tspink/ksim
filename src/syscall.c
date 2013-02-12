@@ -8,6 +8,7 @@
  */
 #include <ksim.h>
 #include <malloc.h>
+#include <sys/mman.h>
 
 int syscall_not_impl(struct ksim_context *ctx)
 {
