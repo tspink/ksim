@@ -10,5 +10,5 @@
 
 int syscall_not_impl(struct arcsim_syscall_ctx *ctx)
 {
-    return -1;
+	return -1;
 }

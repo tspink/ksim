@@ -12,7 +12,7 @@ extern int arm_perform_syscall(struct ksim_context *ctx, unsigned int syscall, i
 
 static int arm_init()
 {
-    return 0;
+	return 0;
 }
 
 static void arm_exit()

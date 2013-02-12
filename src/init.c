@@ -11,8 +11,8 @@
 
 static int syscall(struct arcsim_syscall_ctx *syscall_ctx)
 {
-    struct ksim_context *ctx = syscall_ctx->priv;
-    return ctx->arch->syscall(ctx, syscall_ctx->syscall_nr, 0, 0, 0, 0);
+	struct ksim_context *ctx = syscall_ctx->priv;
+	return ctx->arch->syscall(ctx, syscall_ctx->syscall_nr, 0, 0, 0, 0);
 }
 
 static int kernel_init(struct arcsim_kernel_options *opt)
@@ -50,16 +50,16 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 	/* Start the various subsystems. */
 	rc = thread_init(ctx);
 	if (rc) {
-	    free(ctx);
-	    arch->exit();
+		free(ctx);
+		arch->exit();
 	}
 	
 	rc = vfs_init(ctx);
 	if (rc) {
-	    thread_exit(ctx);
-	    free(ctx);
-	    arch->exit();
-	    return rc;
+		thread_exit(ctx);
+		free(ctx);
+		arch->exit();
+		return rc;
 	}
 	
 	/* Populate the arcsim options structure. */
