@@ -77,9 +77,8 @@ struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long pag
 	page->ctx = ctx;
 	page->page_index = page_index;
 	page->guest_base = page_index * GUEST_PAGE_SIZE;
-	page->host_base = 0;
+	page->host_base = ctx->arcsim->map_page(page_index);
 	page->ref = 1;
-	//page->host_base = mmap(NULL, GUEST_PAGE_SIZE, PROT_READ, MAP_PRIVATE)
 	
 	if (!page->host_base) {
 		free(page);
@@ -96,6 +95,7 @@ void mem_unmap_guest_page(struct ksim_page *page)
 		return;
 	
 	remove_page(page);
+	page->ctx->arcsim->unmap_page(page->page_index);
 	free(page);
 }
 
