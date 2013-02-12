@@ -3,7 +3,7 @@
  * 
  * mem/page.c
  * 
- * Coypright (C) University of Edinburgh 2013
+ * Copyright (C) University of Edinburgh 2013
  * Tom Spink <t.spink@sms.ed.ac.uk>
  */
 #include <ksim.h>
