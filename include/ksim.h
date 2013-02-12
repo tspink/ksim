@@ -46,10 +46,20 @@ struct ksim_context {
 
 extern const struct ksim_arch arm_arch;
 
-extern int syscall_not_impl(struct arcsim_syscall_ctx *ctx);
+#define __guest
+
+extern int syscall_not_impl(struct ksim_context *ctx);
+extern int syscall_open(struct ksim_context *ctx, __guest const char *path, int mode);
+extern int syscall_close(struct ksim_context *ctx, int fd);
+extern int syscall_exit(struct ksim_context *ctx);
+extern int syscall_exit_group(struct ksim_context *ctx);
+
 extern int vfs_init(struct ksim_context *context);
 extern void vfs_exit(struct ksim_context *context);
 extern int thread_init(struct ksim_context *context);
 extern void thread_exit(struct ksim_context *context);
+
+extern char *read_guest_string(struct ksim_context *context, __guest const char *str);
+extern void free_guest_string(char *str);
 
 #endif

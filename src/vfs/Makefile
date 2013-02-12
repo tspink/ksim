@@ -1,1 +1,1 @@
-obj-y := vfs.o
+obj-y := vfs.o vfs-syscall.o
