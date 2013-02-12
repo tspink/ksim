@@ -15,7 +15,7 @@ static int syscall(struct arcsim_syscall_ctx *syscall_ctx)
 	return ctx->arch->syscall(ctx, syscall_ctx->syscall_nr, 0, 0, 0, 0);
 }
 
-static int kernel_init(struct arcsim_kernel_options *opt)
+static int kernel_init(struct arcsim_kernel_options *opt, struct arcsim_callbacks *callbacks)
 {
 	struct ksim_context *ctx;
 	const struct ksim_arch *arch;
@@ -46,6 +46,7 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 	/* Initialise the ksim context object. */
 	ctx->arch = arch;
 	ctx->opt = opt;
+	ctx->arcsim = callbacks;
 	
 	/* Start the various subsystems. */
 	rc = thread_init(ctx);

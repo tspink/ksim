@@ -17,6 +17,11 @@ enum arcsim_arch_type {
 	ARCH_X86	= 2,
 };
 
+struct arcsim_callbacks {
+	void *(*map_page)(unsigned long);
+	void (*unmap_page)(unsigned long);
+};
+
 struct arcsim_kernel_options {
 	void *priv;
 	arcsim_syscall_cb syscall;
@@ -24,7 +29,7 @@ struct arcsim_kernel_options {
 };
 
 struct arcsim_kernel {
-	int (*init)(struct arcsim_kernel_options *);
+	int (*init)(struct arcsim_kernel_options *, struct arcsim_callbacks *);
 	void (*exit)(void *);
 };
 
@@ -40,6 +45,7 @@ struct ksim_thread_context;
 struct ksim_context {
 	const struct ksim_arch *arch;
 	struct arcsim_kernel_options *opt;
+	struct arcsim_callbacks *arcsim;
 	struct ksim_vfs_context *vfs;
 	struct ksim_thread_context *thread;
 };
