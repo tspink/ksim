@@ -1,2 +1,2 @@
 obj-y := syscall.o init.o
-subdirs-y := arch/
+subdirs-y := arch/ vfs/

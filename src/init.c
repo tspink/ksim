@@ -39,6 +39,15 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 	
 	/* Initialise the ksim context object. */
 	ctx->arch = arch;
+	ctx->opt = opt;
+	
+	/* Start the various subsystems. */
+	rc = vfs_init(ctx);
+	if (rc) {
+	    free(ctx);
+	    arch->exit();
+	    return rc;
+	}
 	
 	/* Populate the arcsim options structure. */
 	opt->priv = ctx;
@@ -49,6 +58,14 @@ static int kernel_init(struct arcsim_kernel_options *opt)
 
 static void kernel_exit(void *priv)
 {
+	struct ksim_context *ctx = priv;
+	
+	/* Finalise the various subsystems. */
+	vfs_exit(ctx);
+	
+	/* Shutdown the architecture. */
+	ctx->arch->exit();
+	
 	/* Release the ksim context object. */
 	free(priv);
 }

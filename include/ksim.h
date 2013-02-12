@@ -25,17 +25,23 @@ struct arcsim_kernel {
 };
 
 struct ksim_arch {
-    int (*init)();
-    void (*exit)();
-    syscall_cb syscall;
+	int (*init)();
+	void (*exit)();
+	syscall_cb syscall;
 };
 
+struct ksim_vfs_context;
+
 struct ksim_context {
-    const struct ksim_arch *arch;
+	const struct ksim_arch *arch;
+	struct arcsim_kernel_options *opt;
+	struct ksim_vfs_context *vfs;
 };
 
 extern const struct ksim_arch arm_arch;
 
 extern int syscall_not_impl(struct arcsim_syscall_ctx *ctx);
+extern int vfs_init(struct ksim_context *context);
+extern void vfs_exit(struct ksim_context *context);
 
 #endif
