@@ -7,8 +7,9 @@
  * Tom Spink <t.spink@sms.ed.ac.uk>
  */
 #include <ksim.h>
+#include <ksim-binary.h>
 
-int raw_load(struct ksim_context *ctx, const char *path)
+int raw_load(struct ksim_binary *binary)
 {
 	return -1;
 }
