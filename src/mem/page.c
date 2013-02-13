@@ -77,7 +77,7 @@ struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long pag
 	page->ctx = ctx;
 	page->page_index = page_index;
 	page->guest_base = page_index * GUEST_PAGE_SIZE;
-	page->host_base = ctx->arcsim->map_page(page_index);
+	page->host_base = (unsigned long)ctx->arcsim->map_page(page_index);
 	page->ref = 1;
 	
 	if (!page->host_base) {
