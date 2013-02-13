@@ -1,6 +1,14 @@
 #ifndef __KSIM_H__
 #define __KSIM_H__
 
+#define DEBUG
+#ifdef DEBUG
+# include <stdio.h>
+# define kdbg(a...) fprintf(stderr, "debug: " a)
+#else
+# define kdbg(a...)
+#endif
+
 enum arcsim_arch_type {
 	ARCH_UNKNOWN	= 0,
 	ARCH_ARM	= 1,

@@ -9,6 +9,8 @@ struct ksim_binary {
 	const char *path;
 	enum arcsim_binary_type type;
 	
+	void *priv;
+	
 	void *base;
 	unsigned int size;
 };
