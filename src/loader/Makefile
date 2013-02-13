@@ -1,1 +1,1 @@
-obj-y := loader.o
+obj-y := loader.o elf.o dos.o hex.o raw.o
