@@ -11,8 +11,14 @@
 
 static int syscall(struct arcsim_syscall_ctx *syscall_ctx)
 {
-	struct ksim_context *ctx = syscall_ctx->priv;
+	struct ksim_context *ctx = syscall_ctx->arcsim_ctx.priv;
 	return ctx->arch->syscall(ctx, syscall_ctx->syscall_nr, 0, 0, 0, 0);
+}
+
+static int load_binary(struct arcsim_load_binary_ctx *load_binary_ctx)
+{
+	struct ksim_context *ctx = load_binary_ctx->arcsim_ctx.priv;
+	return ksim_load_binary(ctx, load_binary_ctx->path, load_binary_ctx->type);
 }
 
 static int kernel_init(struct arcsim_kernel_options *opt, struct arcsim_callbacks *callbacks)
@@ -66,6 +72,7 @@ static int kernel_init(struct arcsim_kernel_options *opt, struct arcsim_callback
 	/* Populate the arcsim options structure. */
 	opt->priv = ctx;
 	opt->syscall = syscall;
+	opt->load_binary = load_binary;
 
 	return 0;
 }
