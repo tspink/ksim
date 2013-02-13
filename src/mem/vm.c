@@ -9,12 +9,17 @@
 #include <ksim.h>
 #include <ksim-mem.h>
 
-void *vm_map(struct ksim_context *ctx, void *addr, unsigned int size)
+void *vm_alloc_fixed(struct ksim_context *ctx, void *addr, unsigned int size)
 {
 	return NULL;
 }
 
-void vm_unmap(struct ksim_context *ctx, void *addr, unsigned int size)
+void *vm_alloc(struct ksim_context *ctx, unsigned int size)
+{
+	return NULL;
+}
+
+void vm_free(struct ksim_context *ctx, void *addr)
 {
 	
 }
