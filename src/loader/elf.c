@@ -68,7 +68,7 @@ static int load_program_header(struct ksim_elf_info *elf_info, Elf32_Ehdr *elf_h
 				return -1;
 			}
 			
-			strncpy(elf_interpreter, (unsigned long)elf_header + prog_header[i].p_offset, prog_header[i].p_filesz);
+			strncpy(elf_interpreter, (char *)elf_header + prog_header[i].p_offset, prog_header[i].p_filesz);
 			kdbg("elf: interpreter: %s\n", elf_interpreter);
 			kdbg("elf: loading interpreter indirectly not supported.\n");
 			free(elf_interpreter);

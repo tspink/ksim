@@ -10,7 +10,7 @@
 #include <ksim-vfs.h>
 #include <stdio.h>
 
-int syscall_open(struct ksim_context *ctx, __guest const char *gpath, int mode)
+int syscall_open(struct ksim_context *ctx, const char __guest *gpath, int mode)
 {
 	char *path = read_guest_string(ctx, gpath);
 	char *translated_path;
