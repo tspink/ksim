@@ -15,6 +15,10 @@ struct ksim_page {
 	struct ksim_page *next;
 };
 
+struct ksim_vm_info {
+	int tag;
+};
+
 struct ksim_context;
 
 extern struct ksim_page *mem_map_guest_page(struct ksim_context *ctx, unsigned long page_index);

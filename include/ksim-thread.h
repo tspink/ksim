@@ -7,10 +7,12 @@
 
 struct ksim_page;
 struct ksim_context;
+struct ksim_vm_info;
 
 struct ksim_thread {
     unsigned int pid;
     
+    struct ksim_vm_info *vm;
     struct vfs_fildes fd_table[MAX_FILDES];
     struct ksim_page *page_mapping;
 };

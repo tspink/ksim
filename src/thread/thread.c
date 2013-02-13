@@ -20,7 +20,7 @@ static inline unsigned int alloc_pid()
 	return current_pid++;
 }
 
-static struct ksim_thread *create_thread_descriptor(int pid)
+static struct ksim_thread *create_thread_descriptor(struct ksim_context *ctx, int pid)
 {
 	struct ksim_thread *thread;
 	thread = malloc(sizeof(*thread));
@@ -32,6 +32,7 @@ static struct ksim_thread *create_thread_descriptor(int pid)
 	
 	/* Initialise page mapping information. */
 	thread->page_mapping = NULL;
+	thread->vm = vm_create_info(ctx);
     
 	/* Initialise the file-descriptor table. */
 	memset(thread->fd_table, 0, sizeof(thread->fd_table));
@@ -52,7 +53,7 @@ int thread_init(struct ksim_context *ctx)
 	if (!ctx->thread)
 		return -1;
 	
-	ctx->thread->main_thread = create_thread_descriptor(alloc_pid());
+	ctx->thread->main_thread = create_thread_descriptor(ctx, alloc_pid());
 	if (!ctx->thread->main_thread) {
 		free(ctx->thread);
 		return -1;
