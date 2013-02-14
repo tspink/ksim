@@ -137,3 +137,22 @@ int vm_copy_from(struct ksim_context *ctx, void __guest *addr, void *dest, unsig
 	/* TODO: vm_read */
 	return -1;
 }
+
+char *vm_read_string(struct ksim_context *ctx, const char __guest *addr, unsigned int size)
+{
+	char *buffer = calloc(size + 1, 1);
+	int rc;
+	
+	rc = vm_copy_from(ctx, (void *)addr, buffer, size);
+	if (rc) {
+		free(buffer);
+		return NULL;
+	}
+	
+	return buffer;
+}
+
+void vm_free_string(struct ksim_context *ctx, char *str)
+{
+	free(str);
+}

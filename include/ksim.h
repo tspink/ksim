@@ -96,7 +96,4 @@ extern void vfs_exit(struct ksim_context *context);
 extern int thread_init(struct ksim_context *context);
 extern void thread_exit(struct ksim_context *context);
 
-extern char *read_guest_string(struct ksim_context *context, const char __guest *str);
-extern void free_guest_string(struct ksim_context *context, const char __guest *str);
-
 #endif

@@ -17,17 +17,3 @@ int syscall_not_impl(struct ksim_context *ctx)
 	printf("error: syscall not implemented\n");
 	return -1;
 }
-
-char *read_guest_string(struct ksim_context *ctx, const char __guest *addr)
-{
-	struct ksim_page *page = mem_map_guest_page(ctx, GUEST_ADDR_TO_PAGE(addr));
-	if (!page)
-		return NULL;
-	
-	return (char *)(page->host_base + GUEST_ADDR_TO_PAGE_OFFSET(addr));
-}
-
-void free_guest_string(struct ksim_context *ctx, const char __guest *addr)
-{
-	mem_unmap_guest_page_nr(ctx, GUEST_ADDR_TO_PAGE(addr));
-}

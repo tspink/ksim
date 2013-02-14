@@ -8,11 +8,12 @@
  */
 #include <ksim.h>
 #include <ksim-vfs.h>
+#include <ksim-mem.h>
 #include <stdio.h>
 
 int syscall_open(struct ksim_context *ctx, const char __guest *gpath, int mode)
 {
-	char *path = read_guest_string(ctx, gpath);
+	char *path = vm_read_string(ctx, (const char *)gpath, 256);
 	char *translated_path;
 	
 	if (!path)
@@ -21,7 +22,7 @@ int syscall_open(struct ksim_context *ctx, const char __guest *gpath, int mode)
 	translated_path = vfs_translate_path(ctx, path);
 	printf("SYSCALL: OPEN: %s, REAL: %s\n", path, translated_path);
 	
-	free_guest_string(ctx, path);
+	vm_free_string(ctx, path);
 	return -1;
 }
 

@@ -1,2 +1,2 @@
-obj-y := page.o vm.o
+obj-y := vm.o
 	
