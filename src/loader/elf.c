@@ -11,6 +11,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <elf.h>
+#include <ksim-mem.h>
 
 struct ksim_elf_info {
 	int tag;
@@ -38,12 +39,21 @@ static inline int check_arch(struct ksim_context *ctx, Elf32_Ehdr *header)
 	}
 }
 
-static int load_segment(Elf32_Phdr *prog_header)
+static int load_segment(struct ksim_binary *binary, Elf32_Phdr *prog_header, unsigned int load_bias)
 {
-	return -1;
+	void __guest *load_address = (void __guest *)((unsigned long)prog_header->p_vaddr + load_bias);
+	void *data = (void *)((unsigned long)binary->base + prog_header->p_offset);
+	int rc;
+	
+	rc = vm_alloc_fixed(binary->ctx, load_address, prog_header->p_filesz);
+	if (rc) {
+		return -1;
+	}
+	
+	return vm_copy_to(binary->ctx, load_address, data, prog_header->p_filesz);
 }
 
-static int load_program_header(struct ksim_elf_info *elf_info, Elf32_Ehdr *elf_header)
+static int load_program_header(struct ksim_binary *binary, struct ksim_elf_info *elf_info, Elf32_Ehdr *elf_header)
 {
 	Elf32_Phdr *prog_header = (Elf32_Phdr *)((unsigned long)elf_header + elf_header->e_phoff);
 	char *elf_interpreter;
@@ -75,7 +85,7 @@ static int load_program_header(struct ksim_elf_info *elf_info, Elf32_Ehdr *elf_h
 			return -1;
 		} else if (prog_header[i].p_type == PT_LOAD) {
 			kdbg("elf: found loadable\n");
-			rc = load_segment(&prog_header[i]);
+			rc = load_segment(binary, &prog_header[i], 0);
 			if (rc) {
 				kdbg("elf: load segment failed\n");
 				return -1;
@@ -135,7 +145,7 @@ int elf_load(struct ksim_binary *binary)
 	
 	binary->priv = elf_info;
 		
-	rc = load_program_header(elf_info, header);
+	rc = load_program_header(binary, elf_info, header);
 	if (rc) {
 		free(elf_info);
 		return rc;

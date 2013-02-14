@@ -33,5 +33,8 @@ extern void mem_unmap_guest_page(struct ksim_page *page);
 extern void mem_unmap_guest_page_nr(struct ksim_context *ctx, unsigned long page_index);
 
 extern struct ksim_vm_info *vm_create_info(struct ksim_context *ctx);
+extern int vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int size);
+extern int vm_copy_to(struct ksim_context *ctx, void __guest *addr, void *src, unsigned int size);
+extern int vm_copy_from(struct ksim_context *ctx, void __guest *addr, void *dest, unsigned int size);
 
 #endif

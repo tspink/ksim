@@ -26,6 +26,18 @@
  *   + MMU
  *   + NOMMU
  */
+static inline int is_allocated(struct ksim_context *ctx, void __guest *addr)
+{
+	struct ksim_vm_info *vmi = thread_current(ctx)->vm;
+	struct vm_alloc_region *rgn;
+		
+	for (rgn = vmi->regions; rgn; rgn = rgn->next) {
+		if ((unsigned long)addr >= rgn->base && (unsigned long)addr <= rgn->base + rgn->size)
+			return 1;
+	}
+	
+	return 0;
+}
 
 struct ksim_vm_info *vm_create_info(struct ksim_context *ctx)
 {
@@ -57,9 +69,9 @@ int vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int si
 	
 	/* Look for overlapping allocation regions, and instantly refuse
 	 * allocation. */
-	for (rgn = vmi->regions; rgn; rgn = rgn->next) {
-		if ((unsigned long)addr >= rgn->base && (unsigned long)addr <= rgn->base + rgn->size)
-			return -1;
+	if (is_allocated(ctx, addr)) {
+		kdbg("vm: address already allocated\n");
+		return -1;
 	}
 	
 	/* Allocate storage for the allocation region descriptor. */
@@ -97,8 +109,6 @@ void vm_free(struct ksim_context *ctx, void __guest *addr)
 	struct ksim_vm_info *vmi = thread_current(ctx)->vm;
 	struct vm_alloc_region *rgn;
 		
-	/* Look for overlapping allocation regions, and instantly refuse
-	 * allocation. */
 	for (rgn = vmi->regions; rgn; rgn = rgn->next) {
 		if ((unsigned long)addr == rgn->base) {
 			/* TODO: Remove from list. */
@@ -108,4 +118,22 @@ void vm_free(struct ksim_context *ctx, void __guest *addr)
 	}
 	
 	kdbg("vm: attempt to free region without matching base pointer\n");
+}
+
+int vm_copy_to(struct ksim_context *ctx, void __guest *addr, void *src, unsigned int size)
+{
+	if (!is_allocated(ctx, addr))
+		return -1;
+	
+	/* TODO: vm_write */
+	return 0;
+}
+
+int vm_copy_from(struct ksim_context *ctx, void __guest *addr, void *dest, unsigned int size)
+{
+	if (!is_allocated(ctx, addr))
+		return -1;
+
+	/* TODO: vm_read */
+	return -1;
 }
