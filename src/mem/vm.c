@@ -125,8 +125,7 @@ int vm_copy_to(struct ksim_context *ctx, void __guest *addr, void *src, unsigned
 	if (!is_allocated(ctx, addr))
 		return -1;
 	
-	/* TODO: vm_write */
-	return 0;
+	return ctx->arcsim->vm_write(src, (unsigned long)addr, size);
 }
 
 int vm_copy_from(struct ksim_context *ctx, void __guest *addr, void *dest, unsigned int size)
@@ -134,8 +133,7 @@ int vm_copy_from(struct ksim_context *ctx, void __guest *addr, void *dest, unsig
 	if (!is_allocated(ctx, addr))
 		return -1;
 
-	/* TODO: vm_read */
-	return -1;
+	return ctx->arcsim->vm_write(dest, (unsigned long)addr, size);
 }
 
 char *vm_read_string(struct ksim_context *ctx, const char __guest *addr, unsigned int size)

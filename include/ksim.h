@@ -44,8 +44,8 @@ typedef int (*arcsim_load_binary_cb)(struct arcsim_load_binary_ctx *);
 typedef int (*ksim_syscall_cb)(struct ksim_context *, unsigned int, int, int, int, int);
 
 struct arcsim_callbacks {
-	void *(*map_page)(unsigned long);
-	void (*unmap_page)(unsigned long);
+	int (*vm_read)(void *dest, unsigned long addr, unsigned int size);
+	int (*vm_write)(void *src, unsigned long addr, unsigned int size);
 };
 
 struct arcsim_kernel_options {
