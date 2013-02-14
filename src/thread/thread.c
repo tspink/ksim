@@ -10,8 +10,8 @@
 #include <ksim-thread.h>
 #include <malloc.h>
 #include <string.h>
-
-#include "ksim-vfs.h"
+#include <ksim-vfs.h>
+#include <ksim-mem.h>
 
 static unsigned int current_pid = 1;
 

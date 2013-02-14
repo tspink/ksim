@@ -16,8 +16,14 @@ struct ksim_page {
 	struct ksim_page *next;
 };
 
+struct vm_alloc_region {
+	unsigned long base;
+	unsigned int size;
+	struct vm_alloc_region *next;
+};
+
 struct ksim_vm_info {
-	int tag;
+	struct vm_alloc_region *regions;
 };
 
 struct ksim_context;

@@ -36,21 +36,48 @@ struct ksim_vm_info *vm_create_info(struct ksim_context *ctx)
 		return NULL;
 	}
 	
-	vmi->tag = 0;
+	vmi->regions = NULL;
 	
 	return vmi;
 }
 
-void __guest *vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int size)
+int vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int size)
 {
 	struct ksim_vm_info *vmi = thread_current(ctx)->vm;
+	struct vm_alloc_region *rgn;
 	
+	/* Must be aligned to 4-byte boundary. */
+	/* TODO: Should this be 8-bytes for 64-bit emulation? */
+	if ((unsigned long)addr % 4)
+		return -1;
+	
+	/* Size must be aligned to page size. */
 	if (size % GUEST_PAGE_SIZE)
 		size += GUEST_PAGE_SIZE - (size % GUEST_PAGE_SIZE);
 	
-	// TODO: Check allocation tables
+	/* Look for overlapping allocation regions, and instantly refuse
+	 * allocation. */
+	for (rgn = vmi->regions; rgn; rgn = rgn->next) {
+		if ((unsigned long)addr >= rgn->base && (unsigned long)addr <= rgn->base + rgn->size)
+			return -1;
+	}
 	
-	return NULL;
+	/* Allocate storage for the allocation region descriptor. */
+	rgn = malloc(sizeof(*rgn));
+	if (!rgn) {
+		return -1;
+	}
+	
+	/* Populate the region descriptor, and insert it into the list. */
+	rgn->base = (unsigned long)addr;
+	rgn->size = size;
+	rgn->next = vmi->regions;
+	
+	vmi->regions = rgn;
+	
+	kdbg("vm: alloc: base=0x%lx, size=0x%x\n", rgn->base, rgn->size);
+	
+	return 0;
 }
 
 void __guest *vm_alloc(struct ksim_context *ctx, unsigned int size)
@@ -59,7 +86,7 @@ void __guest *vm_alloc(struct ksim_context *ctx, unsigned int size)
 	
 	/* TODO:  Handle OOM condition. */
 	while (!vm_alloc_fixed(ctx, addr, size)) {
-		addr = (unsigned long)addr + GUEST_PAGE_SIZE;
+		addr = (void *)((unsigned long)addr + GUEST_PAGE_SIZE);
 	}
 	
 	return addr;
@@ -67,5 +94,18 @@ void __guest *vm_alloc(struct ksim_context *ctx, unsigned int size)
 
 void vm_free(struct ksim_context *ctx, void __guest *addr)
 {
+	struct ksim_vm_info *vmi = thread_current(ctx)->vm;
+	struct vm_alloc_region *rgn;
+		
+	/* Look for overlapping allocation regions, and instantly refuse
+	 * allocation. */
+	for (rgn = vmi->regions; rgn; rgn = rgn->next) {
+		if ((unsigned long)addr == rgn->base) {
+			/* TODO: Remove from list. */
+			kdbg("vm: free region - not implemented\n");
+			break;
+		}
+	}
 	
+	kdbg("vm: attempt to free region without matching base pointer\n");
 }
