@@ -69,6 +69,9 @@ int vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int si
 	
 	/* Look for overlapping allocation regions, and instantly refuse
 	 * allocation. */
+	
+	/* TODO: MMAP semantics allow overlapping regions, where
+	 * overlapping portions are split. */
 	if (is_allocated(ctx, addr)) {
 		kdbg("vm: address already allocated\n");
 		return -1;
@@ -94,7 +97,8 @@ int vm_alloc_fixed(struct ksim_context *ctx, void __guest *addr, unsigned int si
 
 void __guest *vm_alloc(struct ksim_context *ctx, unsigned int size)
 {
-	void *addr = (void *)GUEST_HEAP_BASE;
+	struct ksim_vm_info *vmi = thread_current(ctx)->vm;
+	void *addr = (void *)vmi->heap_base;
 	
 	/* TODO:  Handle OOM condition. */
 	while (!vm_alloc_fixed(ctx, addr, size)) {

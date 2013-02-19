@@ -1,7 +1,6 @@
 #ifndef __KSIM_MEM_H__
 #define __KSIM_MEM_H__
 
-#define GUEST_HEAP_BASE 0x40000000
 #define GUEST_PAGE_SIZE 4096
 
 struct vm_alloc_region {
@@ -11,6 +10,8 @@ struct vm_alloc_region {
 };
 
 struct ksim_vm_info {
+	unsigned long heap_base;
+	unsigned long stack_bottom;
 	struct vm_alloc_region *regions;
 };
 

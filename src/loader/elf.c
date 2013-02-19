@@ -12,6 +12,7 @@
 #include <string.h>
 #include <elf.h>
 #include <ksim-mem.h>
+#include <ksim-thread.h>
 
 struct ksim_elf_info {
 	int tag;
@@ -126,9 +127,28 @@ static int initial_sanity_check(struct ksim_binary *binary, Elf32_Ehdr *header)
 	return 0;
 }
 
+static int init_stack(struct ksim_binary *binary)
+{
+	struct ksim_vm_info *vmi = thread_current(binary->ctx)->vm;
+	static const int stack_size = 0x4000;
+	
+	/* Allocate stack area */
+	return vm_alloc_fixed(binary->ctx, (void *)(vmi->stack_bottom - stack_size), stack_size);
+}
+
+static int init_heap(struct ksim_binary *binary)
+{
+	struct ksim_vm_info *vmi = thread_current(binary->ctx)->vm;
+	static const int heap_size = 0x4000;
+	
+	/* Allocate heap area */
+	return vm_alloc_fixed(binary->ctx, (void *)vmi->heap_base, heap_size);
+}
+
 int elf_load(struct ksim_binary *binary)
 {
 	Elf32_Ehdr *header = (Elf32_Ehdr *)binary->base;
+	struct ksim_vm_info *vmi = thread_current(binary->ctx)->vm;
 	struct ksim_elf_info *elf_info;
 	int rc;
 	
@@ -143,14 +163,33 @@ int elf_load(struct ksim_binary *binary)
 		return -1;
 	}
 	
-	binary->priv = elf_info;
-		
+	binary->priv = elf_info;	
+	binary->entry_point = header->e_entry;
+	
+	/* Setup the program's VM information. */
+	vmi->stack_bottom = 0x40000000;
+	vmi->heap_base = 0x40000000;
+
+	/* Initialise the program stack. */
+	rc = init_stack(binary);
+	if (rc) {
+		free(elf_info);
+		return rc;
+	}
+	
+	/* Initialise the program heap. */
+	rc = init_heap(binary);
+	if (rc) {
+		free(elf_info);
+		return rc;
+	}
+
+	/* Now, load the program into memory. */
 	rc = load_program_header(binary, elf_info, header);
 	if (rc) {
 		free(elf_info);
 		return rc;
 	}
 	
-	free(elf_info);
-	return -1;
+	return 0;
 }

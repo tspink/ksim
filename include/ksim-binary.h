@@ -13,6 +13,8 @@ struct ksim_binary {
 	
 	void *base;
 	unsigned int size;
+	
+	unsigned long entry_point;
 };
 
 extern int elf_load(struct ksim_binary *binary);
